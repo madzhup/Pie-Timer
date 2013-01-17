@@ -1,11 +1,18 @@
 Pie Timer
 =========
 
-Простейший плагин для создания кругового таймера/индикатора
+Простейший [jQuery](http://jquery.com "jQuery") плагин для создания кругового таймера/индикатора, также использует [Raphael JS](http://raphaeljs.com "Raphael JS")
 
 
-```ruby
-require 'red carpet'
-markdown = Redcarpet.new("Hello World!")
-puts markdown.to_html
+```javascript
+$('selector').arc({
+	width: 100,
+	height: 100,
+	outRadius: 50,
+	inRadius: 30,
+	color: '#fff',
+	fontSize: 18,
+	easing: 'easeIn',
+	time: 2000
+});
 ```
