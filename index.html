@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Circles</title>
+    <style>
+      body{
+        background:#222;
+      }
+      #arc{
+        margin: 50px;
+        width:100px;
+        height: 100px;
+        border-radius:50%;
+        box-shadow: rgba(92,38,255,.5) 0 0 50px;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div id="arc"></div>
+    <script src="https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael-min.js"></script>
+    <script>
+      var ra = Raphael("arc", 500, 100);
+      // Custom Arc Attribute, position x&y, value portion of total, total value, Radius
+      ra.customAttributes.arc = function (xloc, yloc, value, total, R) {
+          var alpha = 360 / total * value,
+              a = (90 - alpha) * Math.PI / 180,
+              x = xloc + R * Math.cos(a),
+              y = yloc - R * Math.sin(a),
+              path;
+          if (total == value) {
+              path = [
+                  ["M", xloc, yloc - R],
+                  ["A", R, R, 0, 1, 1, xloc - 0.01, yloc - R]
+              ];
+          } else {
+              path = [
+                  ["M", xloc, yloc - R],
+                  ["A", R, R, 0, +(alpha > 180), 1, x, y]
+              ];
+          }
+          return {
+              path: path
+          };
+      };
+      
+      //FIRST Example
+      var outCircle = ra.circle(50, 50, 48).attr({stroke: '#5C26FF'});
+      var inCircle = ra.circle(50, 50, 29).attr({stroke: '#5C26FF'});
+      
+      //make an arc at 50,50 with a radius of 30 that grows from 0 to 40 of 100 with a bounce
+      var arc = ra.path().attr({
+          "stroke": "#5C26FF",
+          "stroke-width": 20,
+          arc: [50, 50, 0, 360, 39]
+      });
+      
+      arc.animate({
+          arc: [50, 50, 270, 360, 39]
+      }, 1000, "backOut");
+      
+      
+      //Second Example
+      var gradCircle = ra.circle(200, 50, 45).attr({fill: '90-#999-#eee'});
+      var gradArc = ra.path().attr({
+        stroke: '#8C008C',
+        'stroke-width': 4,
+        arc: [200, 50, 0, 360, 46]
+      });
+      gradArc.animate({
+        arc: [200, 50, 90, 360, 46]
+      }, 1500, 'backOut');
+    </script>
+  </body>
+</html>
