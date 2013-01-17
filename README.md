@@ -3,7 +3,7 @@ Pie Timer
 
 Простейший [jQuery](http://jquery.com "jQuery") плагин для создания кругового таймера/индикатора, также использует [Raphael JS](http://raphaeljs.com "Raphael JS").
 
-`Процент указывается в 'data-percents="45"`
+Процент указывается в `data-percents="45"`
 
 
 ```javascript
