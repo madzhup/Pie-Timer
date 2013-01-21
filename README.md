@@ -3,18 +3,23 @@ Pie Timer
 
 Простейший [jQuery](http://jquery.com "jQuery") плагин для создания кругового таймера/индикатора, также использует [Raphael JS](http://raphaeljs.com "Raphael JS").
 
-Процент указывается в `data-percents="45"`
 
 
 ```javascript
-$('selector').arc({
-	width: 100,
-	height: 100,
-	outRadius: 50,
-	inRadius: 30,
-	color: '#fff',
-	fontSize: 18,
-	easing: 'easeIn',
-	time: 2000
+//Изначальная отрисовка, процент указывается в data-percents="45" атрибуте тега
+
+$('SELECTOR').arc({
+	width: 60, //Ширина элемента SVG, по-умолчанию: 100
+	height: 60, //Высота элемента SVG, по-умолчанию: 100
+	outRadius: 35, //Внешний радиус, по-умолчанию: 35
+	inRadius: 30, //Внутренний радиус, по-умолчанию: 30
+	percents: 0, //Процент заполнения, по-умолчанию: 0
+	color: '#fff', //Цвет элементов, по-умолчанию: белый
+	fontSize: 14, //Размер шрифта в пикселях: по-умолчанию: 14
+	fontFamily: 'Open Sans, sans-serif', //Шрифт, по-умолчанию: Arial, sans-serif
+	time: 2000, //Время анимации в миллисекундах (если 0, то отрисовка без анимации), по-умочанию: 2000
+	easing: 'linear' //Функция не линейного изменения скорости, по-умолчанию: linear. Возможные значения: easeIn, easeOut, easeInOut, backIn, backOut, elastic, bounce
 });
-```
+
+//Изменение прогресса:
+$('SELECOR').data('arc').redraw(проценты, время); //если время анимации не указано или равно 0 - будет применина отрисовка без анимации```

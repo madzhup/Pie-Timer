@@ -1,23 +1,27 @@
 (function($){
 	$.fn.arc = function(options){
-		 
+
 		var opts = $.extend({
 			width: 100,
 			height: 100,
-			outRadius: 0,
-			inRadius: 0,
+			outRadius: 35,
+			inRadius: 30,
 			percents: 0,
-			color: 'transparent',
+			color: '#fff',
 			fontSize: 14,
-			time: 1000,
+			fontFamily: 'Arial, sans-serif',
+			time: 2000,
 			easing: 'linear'
 		}, options);
 		return this.each(function(){
-			
-			var ra = Raphael(this, opts.width, opts.height);
-			opts.percents = $(this).data('percents');
-			opts.outRadius -= 1;
-			
+			var self = this;
+			self.opts = $.extend({}, opts);
+
+			var ra = Raphael(self, self.opts.width, self.opts.height);
+			if ($(self).data('percents'))
+				self.opts.percents = $(self).data('percents');
+			//self.opts.outRadius -= 1;
+
 			// Custom Arc Attribute, position x&y, value portion of total, total value, Radius
 			ra.customAttributes.arc = function (xloc, yloc, value, total, R) {
 					var alpha = 360 / total * value,
@@ -40,47 +44,62 @@
 							path: path
 					};
 			};
-			var text = ra.text(opts.width/2, opts.height/2, 0+'%'),
-					outCircle = ra.circle(0, 0, opts.outRadius),
-					inCircle = ra.circle(0, 0, opts.inRadius),
+			var text = ra.text(self.opts.width/2, self.opts.height/2),
+					outCircle = ra.circle(0, 0, self.opts.outRadius),
+					inCircle = ra.circle(0, 0, self.opts.inRadius),
 					circles = ra.set(),
-					arcRadius = opts.outRadius-((opts.outRadius-opts.inRadius)/2),
+					arcRadius = self.opts.outRadius-((self.opts.outRadius-self.opts.inRadius)/2),
 					countTimer,
 					count = 0;
-			
+
 			circles.push(outCircle, inCircle);
-			
+
 			circles.attr({
-				cx: opts.width/2,
-				cy: opts.height/2,
-				stroke: opts.color
+				cx: self.opts.width/2,
+				cy: self.opts.height/2,
+				stroke: self.opts.color
 			});
-			
+
 			text.attr({
-				fill: opts.color,
-				'font-size': opts.fontSize
+				fill: self.opts.color,
+				'font-size': self.opts.fontSize,
+				'font-family': self.opts.fontFamily
 			});
-			
-			//make an arc at 50,50 with a radius of 30 that grows from 0 to 40 of 100 with a bounce
-			var arc = ra.path().attr({
-					"stroke": opts.color,
-					"stroke-width": opts.outRadius-opts.inRadius,
-					arc: [opts.width/2, opts.height/2, 0, 100, arcRadius]
-			});
-			countTimer = setInterval(function(){
-				count++;
-				text.attr({
-					text: count+'%'
-				});
-				if(count == opts.percents){
-					clearInterval(countTimer);
+
+			var arc = ra.path();
+			arc.redraw = function(percents, time){
+				if(percents > 100) percents = 100;
+				if(time == 0 || time === undefined){
+					text.attr({
+						text: percents+'%'
+					});
+					arc.attr({
+						"stroke": self.opts.color,
+						"stroke-width": self.opts.outRadius-self.opts.inRadius,
+						arc: [self.opts.width/2, self.opts.height/2, percents, 100, arcRadius]
+					});
+					count = percents;
 				}
-			}, opts.time/opts.percents);
-			arc.animate({
-					arc: [opts.width/2, opts.height/2, opts.percents, 100, arcRadius]
-			}, opts.time, opts.easing);
-			
-			
+				else {
+					var way = Math.abs(count-percents);
+					countTimer = setInterval(function(){
+						percents > count ? count++ : count--;
+
+						text.attr({
+							text: count+'%'
+						});
+						if(count == percents){
+							clearInterval(countTimer);
+						}
+					}, time/way);
+					arc.animate({
+							arc: [self.opts.width/2, self.opts.height/2, percents, 100, arcRadius]
+					}, time, self.opts.easing);
+				}
+				return arc;
+			};
+			arc.redraw(0, 0).redraw(self.opts.percents, self.opts.time);
+			$(self).data('arc', arc);
 		});
 	}
 })(jQuery);
